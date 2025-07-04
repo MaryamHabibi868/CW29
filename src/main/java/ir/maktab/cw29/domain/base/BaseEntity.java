@@ -26,9 +26,9 @@ public class BaseEntity implements Serializable {
     private Long id;
 
     @CreatedDate
-    private ZonedDateTime created;
+    private LocalDateTime created;
 
     @LastModifiedDate
-    private ZonedDateTime updated;
+    private LocalDateTime updated;
 
 }

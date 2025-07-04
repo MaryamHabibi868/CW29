@@ -2,6 +2,7 @@ package ir.maktab.cw29.mapper;
 
 import ir.maktab.cw29.domain.Author;
 import ir.maktab.cw29.dto.AuthorResponseDTO;
+import ir.maktab.cw29.dto.RegisterUpdateAuthor;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 
@@ -11,4 +12,7 @@ public interface AuthorMapper {
 
     //Map for Login
     AuthorResponseDTO mapToDTO(Author author);
+
+
+    Author mapTpEntity(RegisterUpdateAuthor author);
 }
