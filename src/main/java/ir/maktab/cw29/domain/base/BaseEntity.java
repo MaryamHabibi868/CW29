@@ -31,4 +31,5 @@ public class BaseEntity implements Serializable {
     @LastModifiedDate
     private LocalDateTime updated;
 
+
 }
