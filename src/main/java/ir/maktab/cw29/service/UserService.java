@@ -3,14 +3,12 @@ package ir.maktab.cw29.service;
 import ir.maktab.cw29.domain.User;
 import ir.maktab.cw29.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Primary;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-@Primary
 @RequiredArgsConstructor
 @Service
 public class UserService implements UserDetailsService {

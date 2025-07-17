@@ -31,20 +31,21 @@ public class SecurityConfig {
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
                         (requests) -> {
-                            requests.requestMatchers("/api/posts/find-all",
-                                            "/api/posts/find-all-by-author-id/")
+                            requests.requestMatchers(
+                                            "/api/author/register",
+                                            "/api/users/register",
+                                            "/error")
                                     .permitAll();
 
                         //todo add has role
-
-
                             requests.anyRequest().authenticated();
                         }
                 )
                 .httpBasic(withDefaults()).build();
     }
-   /* @Bean
+
+    @Bean
     public UserDetailsService userDetailsService(UserService userService) {
         return userService;
-    }*/
+    }
 }

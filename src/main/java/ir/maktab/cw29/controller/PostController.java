@@ -7,6 +7,7 @@ import ir.maktab.cw29.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -39,11 +40,13 @@ public class PostController {
     }
 
     @GetMapping("/find/{id}")
+    @PreAuthorize("hasAuthority('ROLE_USER'or'ROLE_AUTHOR')")
     public ResponseEntity<PostResponse> findById(@PathVariable Long id) {
         return ResponseEntity.ok(postService.findById(id));
     }
 
     @GetMapping("/find-all/{page-size}/{page-number}")
+    @PreAuthorize("hasAuthority('ROLE_USER'or'ROLE_AUTHOR')")
     public ResponseEntity<Page<PostResponse>> findAll(
             @PathVariable(name= "page-size") Integer pageSize
             , @PathVariable(name= "page-number") Integer pageNumber) {
@@ -51,6 +54,7 @@ public class PostController {
     }
 
     @GetMapping("/find-all-by-author-id/{author-id}/{page-size}/{page-number}")
+    @PreAuthorize("hasAuthority('ROLE_USER'or'ROLE_AUTHOR')")
     public ResponseEntity<Page<PostResponse>> findAllByAuthorId(
             @PathVariable(name= "author-id") Long authorId,
             @PathVariable(name= "page-size") Integer pageSize,
