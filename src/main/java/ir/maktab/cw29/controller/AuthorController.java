@@ -1,6 +1,5 @@
 package ir.maktab.cw29.controller;
 
-import ir.maktab.cw29.domain.Author;
 import ir.maktab.cw29.dto.AuthorResponseDTO;
 import ir.maktab.cw29.dto.LoginAuthorDTO;
 import ir.maktab.cw29.dto.RegisterUpdateAuthor;
@@ -17,11 +16,6 @@ public class AuthorController {
 
     private final AuthorService authorService;
 
-    @GetMapping("/login")
-    public ResponseEntity<AuthorResponseDTO> loginAuthor(
-            @RequestBody LoginAuthorDTO loginAuthorDTO) {
-        return ResponseEntity.ok(authorService.loginAuthor(loginAuthorDTO));
-    }
 
     @PostMapping("/register")
     public ResponseEntity<AuthorResponseDTO> registerAuthor(
