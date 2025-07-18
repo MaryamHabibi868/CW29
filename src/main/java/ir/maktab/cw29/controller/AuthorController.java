@@ -1,7 +1,6 @@
 package ir.maktab.cw29.controller;
 
 import ir.maktab.cw29.dto.AuthorResponseDTO;
-import ir.maktab.cw29.dto.LoginAuthorDTO;
 import ir.maktab.cw29.dto.RegisterUpdateAuthor;
 import ir.maktab.cw29.service.AuthorService;
 import lombok.RequiredArgsConstructor;
