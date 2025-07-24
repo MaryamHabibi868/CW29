@@ -9,6 +9,7 @@ import ir.maktab.cw29.mapper.PostMapper;
 import ir.maktab.cw29.repository.PostRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -52,8 +53,8 @@ public class PostServiceImpl implements PostService {
 
 
     @Override
-    public Page<PostResponse> findAll(Integer pageSize, Integer pageNumber) {
-        Page<Post> all = postRepository.findAll(PageRequest.of(pageNumber, pageSize));
+    public Page<PostResponse> findAll(Pageable pageable) {
+        Page<Post> all = postRepository.findAll(pageable);
         return all.map(postMapper::entityMapToResponse);
     }
 
