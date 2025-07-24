@@ -1,5 +1,6 @@
 package ir.maktab.cw29.security;
 
+import ir.maktab.cw29.domain.User;
 import ir.maktab.cw29.util.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -30,8 +31,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
         if (Objects.nonNull(token) && jwtUtil.isValid(token)) {
             String usernameFromToken1 = jwtUtil.getUsernameFromToken(token);
+            Long useId = jwtUtil.getUseId(token);
             UsernamePasswordAuthenticationToken userInfo = new UsernamePasswordAuthenticationToken(
-                    usernameFromToken1, null, jwtUtil.getAuthorities(token)
+                    User.builder().id(useId).username(usernameFromToken1).build(), null, jwtUtil.getAuthorities(token)
             );
             SecurityContextHolder.getContext().setAuthentication(userInfo);
         }

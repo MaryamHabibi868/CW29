@@ -1,5 +1,6 @@
 package ir.maktab.cw29.controller;
 
+import ir.maktab.cw29.aspect.LogAspect;
 import ir.maktab.cw29.dto.PostResponse;
 import ir.maktab.cw29.dto.PostSaveDTO;
 import ir.maktab.cw29.dto.PostUpdateDTO;
@@ -20,6 +21,7 @@ public class PostController {
 
     private final PostService postService;
 
+    @LogAspect
     @PostMapping("/save")
     public ResponseEntity<PostResponse> save(@RequestBody PostSaveDTO request) {
         Object principal = SecurityContextHolder.
@@ -28,11 +30,13 @@ public class PostController {
         return ResponseEntity.ok(postService.save(request));
     }
 
+    @LogAspect
     @PutMapping("/update")
     public ResponseEntity<PostResponse> update(@RequestBody PostUpdateDTO request) {
         return ResponseEntity.ok(postService.update(request));
     }
 
+    @LogAspect
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteById(
             @PathVariable Long id) {
@@ -40,12 +44,14 @@ public class PostController {
         return ResponseEntity.ok("Post Deleted");
     }
 
+    @LogAspect
     @GetMapping("/find/{id}")
     @PreAuthorize("hasAnyAuthority('ROLE_USER','ROLE_AUTHOR')")
     public ResponseEntity<PostResponse> findById(@PathVariable Long id) {
         return ResponseEntity.ok(postService.findById(id));
     }
 
+    @LogAspect
     @GetMapping("/find-all")
     @PreAuthorize("hasAnyAuthority('ROLE_USER','ROLE_AUTHOR')")
     public ResponseEntity<Page<PostResponse>> findAll(
