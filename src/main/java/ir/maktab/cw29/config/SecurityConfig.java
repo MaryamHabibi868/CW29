@@ -1,28 +1,22 @@
 package ir.maktab.cw29.config;
 
-import ir.maktab.cw29.service.JwtAuthenticationProvider;
+import ir.maktab.cw29.security.JwtAuthenticationFilter;
+import ir.maktab.cw29.security.JwtAuthenticationProvider;
 import ir.maktab.cw29.service.UserService;
-import ir.maktab.cw29.util.JwtTokenFilter;
-import org.springframework.boot.autoconfigure.neo4j.Neo4jProperties;
+import ir.maktab.cw29.security.LoginAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 
 import static org.springframework.security.config.Customizer.withDefaults;
@@ -31,22 +25,15 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    private final JwtTokenFilter jwtTokenFilter;
-    private final JwtAuthenticationProvider jwtAuthenticationProvider;
-
-    public SecurityConfig(JwtTokenFilter jwtTokenFilter,
-                          JwtAuthenticationProvider jwtAuthenticationProvider) {
-        this.jwtTokenFilter = jwtTokenFilter;
-        this.jwtAuthenticationProvider = jwtAuthenticationProvider;
-    }
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http,
+                                                   LoginAuthenticationFilter jwtTokenFilter,
+                                                   JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
@@ -55,6 +42,7 @@ public class SecurityConfig {
                             requests.requestMatchers(
                                             "/api/author/register",
                                             "/api/users/register",
+                                            "/users/login",
                                             "/error")
                                     .permitAll();
 
@@ -62,8 +50,8 @@ public class SecurityConfig {
                             requests.anyRequest().authenticated();
                         }
                 )
-                .httpBasic(withDefaults())
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
@@ -73,7 +61,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager() throws Exception {
+    public AuthenticationManager authenticationManager(JwtAuthenticationProvider jwtAuthenticationProvider) throws Exception {
         return new ProviderManager(Collections.singletonList(jwtAuthenticationProvider));
     }
 

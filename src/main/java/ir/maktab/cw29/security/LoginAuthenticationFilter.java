@@ -1,8 +1,9 @@
-package ir.maktab.cw29.util;
+package ir.maktab.cw29.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ir.maktab.cw29.domain.User;
 import ir.maktab.cw29.dto.LoginDTO;
+import ir.maktab.cw29.util.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,7 +22,7 @@ import java.util.Map;
 
 
 @Component
-public class JwtTokenFilter extends AbstractAuthenticationProcessingFilter {
+public class LoginAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
     private static final PathPatternRequestMatcher loginPath =
             PathPatternRequestMatcher.withDefaults().matcher(
@@ -31,9 +32,9 @@ public class JwtTokenFilter extends AbstractAuthenticationProcessingFilter {
     private final ObjectMapper objectMapper;
     private final JwtUtil jwtUtil;
 
-    protected JwtTokenFilter(AuthenticationManager authenticationManager,
-                             ObjectMapper objectMapper,
-                             JwtUtil jwtUtil) {
+    protected LoginAuthenticationFilter(AuthenticationManager authenticationManager,
+                                        ObjectMapper objectMapper,
+                                        JwtUtil jwtUtil) {
         super(loginPath, authenticationManager);
         this.objectMapper = objectMapper;
         this.jwtUtil = jwtUtil;
@@ -63,9 +64,6 @@ public class JwtTokenFilter extends AbstractAuthenticationProcessingFilter {
                 "token" , token);
 
         objectMapper.writeValue(response.getWriter(), responseBody);
-
-
-        super.successfulAuthentication(request, response, chain, authResult);
     }
 
     @Override

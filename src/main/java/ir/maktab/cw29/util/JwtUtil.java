@@ -8,6 +8,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import ir.maktab.cw29.domain.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
@@ -26,34 +27,32 @@ public class JwtUtil {
     // Generate JWT token
     public String generateToken(User user) {
        return JWT.create().withSubject(user.getUsername())
-               .withClaim("authorities" , List.of(user.getAuthorities()))
+               .withClaim("authorities" , user.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList())
                 .withIssuedAt(Instant.now())
                 .withExpiresAt(Instant.now().plusMillis(jwtExpirationMs))
                 .sign(Algorithm.HMAC256(jwtSecret));
     }
 
-    // Get username from JWT token
-    public String getUsernameFromToken(DecodedJWT decodedJWT) {
-       return decodedJWT.getSubject();
+    public String getUsernameFromToken(String token) {
+        DecodedJWT decodedJWT = decode(token);
+        return decodedJWT.getSubject();
     }
 
-    public DecodedJWT validateToken(String token) {
+    public boolean isValid(String token) {
         DecodedJWT decode = decode(token);
-       if (decode.getExpiresAt().before(Date.from(Instant.now()))) {
-           return null;
-       }
-       return decode;
+        return decode.getExpiresAt().after(Date.from(Instant.now()));
     }
 
 
-    // Validate JWT token
-    public DecodedJWT decode(String token) {
+    private DecodedJWT decode(String token) {
         JWTVerifier verifier = JWT.require(Algorithm.HMAC256(jwtSecret)).build();
         return verifier.verify(token);
     }
 
-    public List<GrantedAuthority> getAuthorities(DecodedJWT decodedJWT) {
+    public List<? extends GrantedAuthority> getAuthorities(String token) {
+        DecodedJWT decodedJWT = decode(token);
         Claim authorities = decodedJWT.getClaim("authorities");
-       return authorities.asList(GrantedAuthority.class);
+        List<String> stringAuthorities = authorities.asList(String.class);
+        return stringAuthorities.stream().map(SimpleGrantedAuthority::new).toList();
     }
 }
