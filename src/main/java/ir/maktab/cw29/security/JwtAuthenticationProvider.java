@@ -1,5 +1,6 @@
 package ir.maktab.cw29.security;
 
+import ir.maktab.cw29.domain.User;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,14 +28,14 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
     public Authentication authenticate(Authentication authentication)
             throws AuthenticationException {
 
-        UserDetails userDetails = userDetailsService
+        User user = (User) userDetailsService
                 .loadUserByUsername(authentication.getPrincipal().toString());
 
-        if (userDetails == null) {
+        if (user == null) {
             throw new UsernameNotFoundException("username not found");
         }
-        if (passwordEncoder.matches(authentication.getCredentials().toString(), userDetails.getPassword())) {
-            authentication = new UsernamePasswordAuthenticationToken(userDetails.getUsername(), userDetails.getPassword(), userDetails.getAuthorities());
+        if (passwordEncoder.matches(authentication.getCredentials().toString(), user.getPassword())) {
+            authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
             return authentication;
         }
         throw new BadCredentialsException("invalid password");

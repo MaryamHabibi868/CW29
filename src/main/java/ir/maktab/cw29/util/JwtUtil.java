@@ -28,6 +28,7 @@ public class JwtUtil {
     public String generateToken(User user) {
        return JWT.create().withSubject(user.getUsername())
                .withClaim("authorities" , user.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList())
+               .withClaim("id", user.getId())
                 .withIssuedAt(Instant.now())
                 .withExpiresAt(Instant.now().plusMillis(jwtExpirationMs))
                 .sign(Algorithm.HMAC256(jwtSecret));
@@ -36,6 +37,11 @@ public class JwtUtil {
     public String getUsernameFromToken(String token) {
         DecodedJWT decodedJWT = decode(token);
         return decodedJWT.getSubject();
+    }
+
+    public Long getUseId(String token) {
+        DecodedJWT decodedJWT = decode(token);
+        return decodedJWT.getClaim("id").asLong();
     }
 
     public boolean isValid(String token) {
