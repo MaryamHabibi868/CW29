@@ -1,13 +1,11 @@
 package ir.maktab.cw29.service;
 
-import ir.maktab.cw29.domain.Post;
 import ir.maktab.cw29.dto.PostResponse;
 import ir.maktab.cw29.dto.PostSaveDTO;
 import ir.maktab.cw29.dto.PostUpdateDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.util.List;
 
 public interface PostService {
 

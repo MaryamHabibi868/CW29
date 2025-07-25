@@ -33,4 +33,9 @@ public class UserService implements UserDetailsService {
                         .build()
         );
     }
+
+    public void existsById(Long userId) {
+         if(!userRepository.existsById(userId))
+             throw new RuntimeException("User not found");
+    }
 }

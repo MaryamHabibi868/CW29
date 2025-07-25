@@ -1,5 +1,6 @@
 package ir.maktab.cw29.service;
 
+import ir.maktab.cw29.domain.Author;
 import ir.maktab.cw29.domain.Post;
 import ir.maktab.cw29.dto.PostResponse;
 import ir.maktab.cw29.dto.PostSaveDTO;
@@ -33,8 +34,12 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostResponse update(PostUpdateDTO request) {
+        Post post = postRepository.findById(request.getId()).orElseThrow(() -> new RuntimeException("not found"));
+        post.setTitle(request.getTitle());
+        post.setContent(request.getContent());
+        post.setAuthor(Author.builder().id(request.getAuthorId()).build());
         return postMapper.entityMapToResponse(
-                postRepository.save(postMapper.updateMapToEntity(request)));
+                postRepository.save(post));
     }
 
 

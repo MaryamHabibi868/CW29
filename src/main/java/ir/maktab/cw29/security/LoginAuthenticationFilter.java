@@ -55,11 +55,9 @@ public class LoginAuthenticationFilter extends AbstractAuthenticationProcessingF
                                             Authentication authResult)
             throws IOException, ServletException {
 
-        String token = jwtUtil.generateToken(User.builder()
-                .username(authResult.getPrincipal().toString())
-                .build());
+        User user = (User) authResult.getPrincipal();
 
-
+        String token = jwtUtil.generateToken(user);
         Map<String , String> responseBody = Map.of(
                 "token" , token);
 
